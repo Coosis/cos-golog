@@ -2,7 +2,6 @@ package cosgolog
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"io"
 )
@@ -17,7 +16,6 @@ const (
 
 var (
 	logger *Logger
-	logFile *os.File
 )
 
 // Levels: DEBUG, INFO, WARN, ERROR, PANIC
@@ -27,100 +25,104 @@ var (
 // WARN: yellow
 // ERROR: red
 // PANIC: magenta
+// If `SetOutput()` is not called, the log will be written to the file `logs.log` and the console.
 type Logger struct {
 	level int
+	logFile *os.File
+	writer io.Writer
 }
 
 func defaultLogger() *Logger {
 	if logger == nil {
-		logger = &Logger{
-			level: 0,
-		}
-	}
-	if logFile == nil {
-		var err error
-		logFile, err = os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		f, err := os.OpenFile("logs.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 		if err != nil {
 			fmt.Println("Error while opening log file!")
 			panic(err)
 		}
+		logger = &Logger{
+			level: 0,
+			logFile: f,
+		}
+		logger.writer = io.MultiWriter(f, os.Stdout)
 	}
-	log.SetOutput(io.MultiWriter(os.Stdout, logFile))
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	return logger
 }
 
-// Levels: DEBUG, INFO, WARN, ERROR, PANIC
-// 4: PANIC
-// 3: ERROR + PANIC
-// 2: WARN + ERROR + PANIC
-// 1: INFO + WARN + ERROR + PANIC
-// 0: DEBUG + INFO + WARN + ERROR + PANIC
-func SetLogLevel(level int) {
-	defaultLogger().level = level
+
+func(l *Logger) Write(str string) {
+	l.writer.Write([]byte(str))
 }
 
-// Wrapper for log.SetFlags()
-func SetFlags(flag int) {
-	log.SetFlags(flag)
+func(l *Logger) Writeln(str string) {
+	l.writer.Write([]byte(str + "\n"))
 }
 
 func Debug(v ...any) {
-	if defaultLogger().level <= 0 {
-		log.Println(green(v...))
+	l := defaultLogger()
+	if l.level <= 0 {
+		l.Writeln(green(Prefix(), v...))
 	}
 }
 
 func Debugf(format string, v ...any) {
-	if defaultLogger().level <= 0 {
-		log.Printf(greenf(format, v...))
+	l := defaultLogger()
+	if l.level <= 0 {
+		l.Write(greenf(Prefix(), format, v...))
 	}
 }
 
 func Info(v ...any) {
-	if defaultLogger().level <= 1 {
-		log.Println(v...)
+	l := defaultLogger()
+	if l.level <= 1 {
+		l.Writeln(Prefix() + fmt.Sprint(v...))
 	}
 }
 
 func Infof(format string, v ...any) {
-	if defaultLogger().level <= 1 {
-		log.Printf(format, v...)
+	l := defaultLogger()
+	if l.level <= 1 {
+		l.Write(fmt.Sprintf(format, v...))
 	}
 }
 
 func Warn(v ...any) {
-	if defaultLogger().level <= 2 {
-		log.Println(yellow(v...))
+	l := defaultLogger()
+	if l.level <= 2 {
+		l.Writeln(yellow(Prefix(), v...))
 	}
 }
 
 func Warnf(format string, v ...any) {
+	l := defaultLogger()
 	if defaultLogger().level <= 2 {
-		log.Printf(yellowf(format, v...))
+		l.Write(yellowf(Prefix(), format, v...))
 	}
 }
 
 func Error(v ...any) {
-	if defaultLogger().level <= 3 {
-		log.Println(red(v...))
+	l := defaultLogger()
+	if l.level <= 3 {
+		l.Writeln(red(Prefix(), v...))
 	}
 }
 
 func Errorf(format string, v ...any) {
+	l := defaultLogger()
 	if defaultLogger().level <= 3 {
-		log.Printf(redf(format, v...))
+		l.Write(redf(Prefix(), format, v...))
 	}
 }
 
 func Panic(v ...any) {
-	if defaultLogger().level <= 4 {
-		log.Println(magenta(v...))
+	l := defaultLogger()
+	if l.level <= 4 {
+		l.Writeln(magenta(Prefix(), v...))
 	}
 }
 
 func Panicf(format string, v ...any) {
+	l := defaultLogger()
 	if defaultLogger().level <= 4 {
-		log.Printf(magentaf(format, v...))
+		l.Write(magentaf(Prefix(), format, v...))
 	}
 }

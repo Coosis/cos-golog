@@ -14,50 +14,50 @@ const (
 	Reset = "\033[0m"
 )
 
-func red(v ...any) string {
-	return Red + fmt.Sprint(v...) + Reset
+func red(prefix string, v ...any) string {
+	return Red + prefix + fmt.Sprint(v...) + Reset
 }
 
-func redf(format string, v ...any) string {
-	return Red + fmt.Sprintf(format, v...) + Reset
+func redf(prefix string, format string, v ...any) string {
+	return Red + prefix + fmt.Sprintf(format, v...) + Reset
 }
 
-func green(v ...any) string {
-	return Green + fmt.Sprint(v...) + Reset
+func green(prefix string, v ...any) string {
+	return Green + prefix + fmt.Sprint(v...) + Reset
 }
 
-func greenf(format string, v ...any) string {
-	return Green + fmt.Sprintf(format, v...) + Reset
+func greenf(prefix string, format string, v ...any) string {
+	return Green + prefix + fmt.Sprintf(format, v...) + Reset
 }
 
-func yellow(v ...any) string {
-	return Yellow + fmt.Sprint(v...) + Reset
+func yellow(prefix string, v ...any) string {
+	return Yellow + prefix + fmt.Sprint(v...) + Reset
 }
 
-func yellowf(format string, v ...any) string {
-	return Yellow + fmt.Sprintf(format, v...) + Reset
+func yellowf(prefix string, format string, v ...any) string {
+	return Yellow + prefix + fmt.Sprintf(format, v...) + Reset
 }
 
-func blue(v ...any) string {
-	return Blue + fmt.Sprint(v...) + Reset
+func blue(prefix string, v ...any) string {
+	return Blue + prefix + fmt.Sprint(v...) + Reset
 }
 
-func bluef(format string, v ...any) string {
-	return Blue + fmt.Sprintf(format, v...) + Reset
+func bluef(prefix string, format string, v ...any) string {
+	return Blue + prefix + fmt.Sprintf(format, v...) + Reset
 }
 
-func magenta(v ...any) string {
-	return Magenta + fmt.Sprint(v...) + Reset
+func magenta(prefix string, v ...any) string {
+	return Magenta + prefix + fmt.Sprint(v...) + Reset
 }
 
-func magentaf(format string, v ...any) string {
-	return Magenta + fmt.Sprintf(format, v...) + Reset
+func magentaf(prefix string, format string, v ...any) string {
+	return Magenta + prefix + fmt.Sprintf(format, v...) + Reset
 }
 
-func cyan(v ...any) string {
-	return Cyan + fmt.Sprint(v...) + Reset
+func cyan(prefix string, v ...any) string {
+	return Cyan + prefix + fmt.Sprint(v...) + Reset
 }
 
-func cyanf(format string, v ...any) string {
-	return Cyan + fmt.Sprintf(format, v...) + Reset
+func cyanf(prefix string, format string, v ...any) string {
+	return Cyan + prefix + fmt.Sprintf(format, v...) + Reset
 }
