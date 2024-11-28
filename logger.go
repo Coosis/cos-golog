@@ -81,7 +81,7 @@ func Info(v ...any) {
 func Infof(format string, v ...any) {
 	l := defaultLogger()
 	if l.level <= 1 {
-		l.Write(fmt.Sprintf(format, v...))
+		l.Write(Prefix() + fmt.Sprintf(format, v...))
 	}
 }
 
